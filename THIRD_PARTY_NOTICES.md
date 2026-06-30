@@ -1,6 +1,6 @@
 # Third Party Notices and Information
 ## xxHash
-This software includes source code derived from the [xxHash project](https://github.com/Cyan4973/xxHash), distributed under the [BSD 2-Clause "Simplified" License](https://opensource.org/license/BSD-2-Clause):
+This software includes source code derived from the [xxHash project](https://xxhash.com), distributed under the [BSD 2-Clause "Simplified" License](https://opensource.org/license/BSD-2-Clause):
 
 ```
 xxHash - Extremely Fast Hash algorithm
