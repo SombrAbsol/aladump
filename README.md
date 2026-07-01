@@ -34,16 +34,16 @@ For more information about the Aladin asset system, see [the documentation](/doc
   * an archive extraction software like [7-Zip](https://7-zip.org/), [The Unarchiver](https://apps.apple.com/us/app/the-unarchiver/id425424353) or [Ark](https://apps.kde.org/fr/ark/)
 
 #### Steps
-1. Launch *Pokémon Trading Card Game Pocket* on your Android device and download the required additional data when prompted
-2. Once the process is complete, close the game, then open X-/APK/S Extractor & Installer
-3. Choose a location to save the APK files, then select *Pokémon TCGP* from the menu and click `Save` to export an `.apks` file
+1. Launch *Pokémon Trading Card Game Pocket* on your Android device, then download the required additional data when prompted
+2. Once the download is complete, close the game, then open X-/APK/S Extractor & Installer
+3. Choose where to save the APK files, then select *Pokémon TCGP* from the menu and click `Save` to export an `.apks` file
 4. Connect your Android device to a computer using a USB cable
-5. On your computer, navigate to the directory where the `Pokémon TCGP.apks` file was saved, then copy it to a location of your choice on your computer
-6. On your computer, navigate to the `Android/data/jp.pokemon.pokemontcgp/files/Sharin.Resources/Default/` directory, then copy the `blob/` and `index/` directories to your computer
-7. Open the `Pokémon TCGP.apks` file with your archive extraction software, then extract the `base.apk` and `split_bundledtree.apk` files from it
-8. Open `base.apk` using your archive extraction software, then extract the `assets/bin/Data/` directory from it
-9. Launch the Unity asset extraction tool, open the `Data` directory you've just extracted into it, then locate and export the `src_cph_1001` file alongside the `blob/` and `index/` directories. If it has the `.bytes` extension, rename the file to remove it
-10. Open `split_bundledtree.apk` with your archive extraction software, then extract the `assets/assetpack/blob/` and `assets/assetpack/index/` directories to the same location as the ones you already have on your computer. If prompted, agree to write to these directories and replace any existing files
+5. From your computer, navigate to the directory on your phone where the `Pokémon TCGP.apks` file was saved, then copy it to a location of your choice on your computer
+6. Open the `Pokémon TCGP.apks` file with your archive extraction software, then extract the `base.apk` and `split_bundledtree.apk` files from it
+7. Open `base.apk` using your archive extraction software, then extract the `assets/bin/Data/` directory from it
+8. Launch the Unity asset extraction tool, open the extracted `Data`, then locate and export the `src_cph_1001` file to a location of your choice. If the exported file has an extension (such as `.bytes` or `.txt`), rename the file to remove it
+9. Open `split_bundledtree.apk` with your archive extraction software, then extract the `assets/assetpack/blob/` and `assets/assetpack/index/` directories into the same location as `src_cph_1001`.
+10. From your computer, navigate to the `Android/data/jp.pokemon.pokemontcgp/files/Sharin.Resources/Default/` directory on your phone, then copy the `blob/` and `index/` directories over the existing ones on your computer. If prompted, agree to write to these directories and replace any existing files
 
 ### Running aladump
 > [!IMPORTANT]
