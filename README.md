@@ -55,6 +55,7 @@ To decrypt the game's assets, run `aladump <indir>`, where `<indir>` is the dire
 * the `src_cph_1001` file
 
 The decrypted Unity assets are written to a newly created `output/` directory. To read them, you may need to specify a Unity version in your asset extraction software (AssetStudioMod: `Options > Import options > Specify Unity version`; AssetRipper: `View > Settings > Import > Default Version`), depending on the game version:
+* 1.7.0: `6000.0.69f1`
 * from 1.5.0 to 1.6.0: `2022.3.62f2`
 * from 1.3.0 to 1.4.1: `2022.3.58f1`
 * from 1.2.0 to 1.2.5: `2022.3.56f1`
