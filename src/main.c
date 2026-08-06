@@ -798,7 +798,7 @@ int main(int argc, char **argv)
         printf(
             "  %s <indir>    must contain 'src_cph_1001', 'index/', 'blob/'\n",
             argv[0]);
-        printf("  %s -h|--help  show this help'\n", argv[0]);
+        printf("  %s -h|--help  show this help\n", argv[0]);
         return EXIT_SUCCESS;
     }
 
