@@ -21,6 +21,14 @@ CFLAGS   := -Wall -Wextra -Werror
 CPPFLAGS := -I $(HEADER_DIR)
 LDFLAGS   = $(if $(filter 1,$(STATIC)),-static)
 LDLIBS   :=
+
+# GCC's -Wformat-truncation (enabled by -Wall since GCC 7) flags the snprintf
+# calls in make_blob_path() on their worst-case sizes; the truncation it
+# computes cannot happen with real paths. clang has no such check, and the
+# Makefile already prefers clang, so silence it for gcc only.
+ifeq ($(findstring gcc,$(notdir $(CC))),gcc)
+CFLAGS += -Wno-format-truncation
+endif
 DEPFLAGS := -MMD -MP
 
 TARGET_NAME := aladump
