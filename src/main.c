@@ -22,6 +22,7 @@
 #ifdef _WIN32
 #include <direct.h>
 #include <io.h>
+#include <share.h>
 #include <windows.h>
 #else
 #include <dirent.h>
