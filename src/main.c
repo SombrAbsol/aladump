@@ -39,8 +39,8 @@
  * Wrappers for MSVC-deprecated CRT functions.
  */
 #ifdef _WIN32
-#define open(path, flags)     xopen((path), (flags))
-#define close                 _close
+#define open(path, flags) xopen((path), (flags))
+#define close             _close
 
 static const char *xstrerror(int err)
 {
@@ -63,8 +63,8 @@ static FILE *xfopen(const char *path, const char *mode)
     return f;
 }
 #else
-#define xstrerror(e)          strerror(e)
-#define xfopen(path, mode)    fopen((path), (mode))
+#define xstrerror(e)       strerror(e)
+#define xfopen(path, mode) fopen((path), (mode))
 #endif
 
 /*
@@ -133,10 +133,10 @@ static bool key_store(uint64_t id, const uint8_t *data, size_t len)
 {
     if (len < KEY_SIZE) {
         fprintf(stderr,
-                "key_store: warning, key 0x%016llx is only %zu bytes (need %d)\n",
-                (unsigned long long)id,
-                len,
-                KEY_SIZE);
+            "key_store: warning, key 0x%016llx is only %zu bytes (need %d)\n",
+            (unsigned long long)id,
+            len,
+            KEY_SIZE);
         return false;
     }
     for (int i = 0; i < MAX_KEYS; i++) {
@@ -186,9 +186,9 @@ static bool file_open(const char *path, file_buf_t *fb)
     int fd = open(path, O_RDONLY);
     if (fd < 0) {
         fprintf(stderr,
-                "\nfile_open: cannot open '%s': %s\n",
-                path,
-                xstrerror(errno));
+            "\nfile_open: cannot open '%s': %s\n",
+            path,
+            xstrerror(errno));
         return false;
     }
 
@@ -197,9 +197,9 @@ static bool file_open(const char *path, file_buf_t *fb)
         int err = errno;
         close(fd);
         fprintf(stderr,
-                "\nfile_open: cannot stat '%s': %s\n",
-                path,
-                xstrerror(err));
+            "\nfile_open: cannot stat '%s': %s\n",
+            path,
+            xstrerror(err));
         return false;
     }
     if (st.st_size <= 0) {
@@ -209,16 +209,16 @@ static bool file_open(const char *path, file_buf_t *fb)
     }
     size_t sz = (size_t)st.st_size;
 
-    #ifndef _WIN32
+#ifndef _WIN32
     // use mmap for large files on POSIX platforms
     if (sz >= MMAP_THRESHOLD) {
         void *p = mmap(NULL, sz, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
         close(fd);
         if (p == MAP_FAILED) {
             fprintf(stderr,
-                    "\nfile_open: mmap failed for '%s': %s\n",
-                    path,
-                    xstrerror(errno));
+                "\nfile_open: mmap failed for '%s': %s\n",
+                path,
+                xstrerror(errno));
             return false;
         }
         fb->data = (uint8_t *)p;
@@ -226,16 +226,16 @@ static bool file_open(const char *path, file_buf_t *fb)
         fb->mapped = true;
         return true;
     }
-    #endif
+#endif
     // fallback to buffered I/O
     close(fd);
 
     FILE *f = xfopen(path, "rb");
     if (!f) {
         fprintf(stderr,
-                "\nfile_open: cannot open '%s': %s\n",
-                path,
-                xstrerror(errno));
+            "\nfile_open: cannot open '%s': %s\n",
+            path,
+            xstrerror(errno));
         return false;
     }
 
@@ -272,13 +272,13 @@ static void file_close(file_buf_t *fb)
         return;
     }
 
-    #ifndef _WIN32
+#ifndef _WIN32
     // release a memory-mapped buffer
     if (fb->mapped) {
         munmap(fb->data, fb->len);
     } else
 
-        #endif
+#endif
     {
         free(fb->data);
     }
@@ -294,9 +294,9 @@ static bool file_write(const char *path, const uint8_t *data, size_t len)
     FILE *f = xfopen(path, "wb");
     if (!f) {
         fprintf(stderr,
-                "file_write: cannot create '%s': %s\n",
-                path,
-                xstrerror(errno));
+            "file_write: cannot create '%s': %s\n",
+            path,
+            xstrerror(errno));
         return false;
     }
 
@@ -319,9 +319,9 @@ static bool mkdir_p(char *path)
             *p = '\0';
             if (MKDIR(path) != 0 && errno != EEXIST) {
                 fprintf(stderr,
-                        "mkdir_p: cannot create '%s': %s\n",
-                        path,
-                        xstrerror(errno));
+                    "mkdir_p: cannot create '%s': %s\n",
+                    path,
+                    xstrerror(errno));
                 *p = '/';
                 return false;
             }
@@ -330,9 +330,9 @@ static bool mkdir_p(char *path)
     }
     if (MKDIR(path) != 0 && errno != EEXIST) {
         fprintf(stderr,
-                "mkdir_p: cannot create '%s': %s\n",
-                path,
-                xstrerror(errno));
+            "mkdir_p: cannot create '%s': %s\n",
+            path,
+            xstrerror(errno));
         return false;
     }
     return true;
@@ -358,9 +358,9 @@ static bool mkdir_cached(char *dir)
         return false;
     }
     snprintf(g_mkdir_cache[g_mkdir_cache_head],
-             sizeof(g_mkdir_cache[g_mkdir_cache_head]),
-             "%s",
-             dir);
+        sizeof(g_mkdir_cache[g_mkdir_cache_head]),
+        "%s",
+        dir);
     g_mkdir_cache_head = (g_mkdir_cache_head + 1) % MKDIR_CACHE_SIZE;
     return true;
 }
@@ -421,7 +421,7 @@ static void walk_dir(const char *dir, file_cb_t cb, void *ud)
         char path[PATH_BUF];
         snprintf(path, sizeof(path), "%s/%s", dir, ent->d_name);
 
-        #if defined(_DIRENT_HAVE_D_TYPE)
+#if defined(_DIRENT_HAVE_D_TYPE)
         unsigned char dt = ent->d_type;
         if (dt == DT_UNKNOWN) {
             // fallback for filesystems that do not populate d_type
@@ -431,15 +431,15 @@ static void walk_dir(const char *dir, file_cb_t cb, void *ud)
                 continue;
             }
             dt = S_ISREG(st.st_mode)  ? DT_REG
-            : S_ISDIR(st.st_mode) ? DT_DIR
-            : DT_UNKNOWN;
+                : S_ISDIR(st.st_mode) ? DT_DIR
+                                      : DT_UNKNOWN;
         }
         if (dt == DT_REG) {
             cb(path, ud);
         } else if (dt == DT_DIR) {
             walk_dir(path, cb, ud);
         }
-        #else
+#else
         // portable fallback when d_type is unavailable
         struct stat st;
         if (stat(path, &st) != 0) {
@@ -451,7 +451,7 @@ static void walk_dir(const char *dir, file_cb_t cb, void *ud)
         } else if (S_ISDIR(st.st_mode)) {
             walk_dir(path, cb, ud);
         }
-        #endif
+#endif
     }
 
     closedir(d);
@@ -501,8 +501,8 @@ static bool decrypt_blob(
     const uint8_t *key = key_find(key_id);
     if (!key) {
         fprintf(stderr,
-                "\ndecrypt_blob: warning, unknown key id 0x%016llx\n",
-                (unsigned long long)key_id);
+            "\ndecrypt_blob: warning, unknown key id 0x%016llx\n",
+            (unsigned long long)key_id);
         return false;
     }
     chacha20_ctx_t ctx;
@@ -532,15 +532,15 @@ static bool load_builtin_sub_key(const char *base_path)
 
     // big-endian header: uint32 offset, uint32 length
     uint32_t offset = ((uint32_t)fb.data[0] << 24)
-    | ((uint32_t)fb.data[1] << 16) | ((uint32_t)fb.data[2] << 8)
-    | (uint32_t)fb.data[3];
+        | ((uint32_t)fb.data[1] << 16) | ((uint32_t)fb.data[2] << 8)
+        | (uint32_t)fb.data[3];
     uint32_t klen = ((uint32_t)fb.data[4] << 24) | ((uint32_t)fb.data[5] << 16)
-    | ((uint32_t)fb.data[6] << 8) | (uint32_t)fb.data[7];
+        | ((uint32_t)fb.data[6] << 8) | (uint32_t)fb.data[7];
 
     if ((size_t)offset + klen > fb.len) {
         file_close(&fb);
         fprintf(stderr,
-                "load_builtin_sub_key: src_cph_1001 header out of bounds\n");
+            "load_builtin_sub_key: src_cph_1001 header out of bounds\n");
         return false;
     }
 
@@ -615,9 +615,9 @@ static void process_index_buf(
 
             if (blob_is_crypted(b)) {
                 decrypt_blob(fb.data,
-                             fb.len,
-                             blob_content_hash(b),
-                             blob_crypt_key_id(b));
+                    fb.len,
+                    blob_content_hash(b),
+                    blob_crypt_key_id(b));
             }
 
             if (!key_store(KEY_ID_MAIN, fb.data, fb.len)) {
@@ -629,7 +629,7 @@ static void process_index_buf(
             file_close(&fb);
             g_main_key_loaded = true;
             printf("Main key loaded from blob %016llx\n",
-                   (unsigned long long)blob_blob_hash(b));
+                (unsigned long long)blob_blob_hash(b));
             break;
         }
     }
@@ -649,30 +649,30 @@ static void process_index_buf(
         file_buf_t fb;
         if (!file_open(blob_path, &fb)) {
             fprintf(stderr,
-                    "process_index_buf: skipping (not found) '%s'\n\n",
-                    blob_path);
+                "process_index_buf: skipping (not found) '%s'\n\n",
+                blob_path);
             continue;
         }
 
         if (blob_is_crypted(b)) {
             if (!decrypt_blob(fb.data,
-                fb.len,
-                blob_content_hash(b),
-                              blob_crypt_key_id(b))) {
+                    fb.len,
+                    blob_content_hash(b),
+                    blob_crypt_key_id(b))) {
                 file_close(&fb);
-            continue;
-                              }
+                continue;
+            }
         }
 
         // xxh64 of the decrypted content must match
         uint64_t actual = xxh64(fb.data, fb.len, 0);
         if (actual != blob_content_hash(b)) {
             fprintf(stderr,
-                    "process_index_buf: hash mismatch for '%s' (got %016llx "
-                    "expected %016llx)\n\n",
-                    addr ? addr : "?",
-                    (unsigned long long)actual,
-                    (unsigned long long)blob_content_hash(b));
+                "process_index_buf: hash mismatch for '%s' (got %016llx "
+                "expected %016llx)\n\n",
+                addr ? addr : "?",
+                (unsigned long long)actual,
+                (unsigned long long)blob_content_hash(b));
             file_close(&fb);
             continue;
         }
@@ -757,10 +757,10 @@ static bool process_path(const char *base)
     mkdir_p(g_output_dir);
 
     g_main_key_addr_hash
-    = xxh64(MAIN_KEY_FILENAME, strlen(MAIN_KEY_FILENAME), 0);
+        = xxh64(MAIN_KEY_FILENAME, strlen(MAIN_KEY_FILENAME), 0);
 
     printf("Main key address hash: 0x%016llx\n",
-           (unsigned long long)g_main_key_addr_hash);
+        (unsigned long long)g_main_key_addr_hash);
 
     if (!load_builtin_sub_key(base)) {
         return false;
@@ -792,9 +792,9 @@ static bool process_path(const char *base)
  */
 int main(int argc, char **argv)
 {
-    #ifdef _WIN32
+#ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8); // ensure UTF-8 output on Windows
-    #endif
+#endif
 
     if (argc >= 2 && (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-h"))) {
         printf(
