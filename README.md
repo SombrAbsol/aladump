@@ -67,6 +67,7 @@ Then open the `output/` directory with your software. You can now browse and exp
 ### Dependencies
 * `clang` or `gcc`
 * `make`
+* `lld` (optional, for native builds with Clang only)
 
 ### Steps
 1. If you don't already have them, install the dependencies

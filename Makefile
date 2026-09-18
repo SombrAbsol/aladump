@@ -17,18 +17,16 @@ $(error Static linking is not supported on macOS)
 endif
 endif
 
+ifneq ($(filter debug,$(MAKECMDGOALS)),)
+ifeq ($(STATIC),1)
+$(error Debug cannot be combined with STATIC=1: sanitizer runtimes require dynamic linking)
+endif
+endif
+
 CFLAGS   := -Wall -Wextra -Werror
 CPPFLAGS := -I $(HEADER_DIR)
 LDFLAGS   = $(if $(filter 1,$(STATIC)),-static)
 LDLIBS   :=
-
-# GCC's -Wformat-truncation (enabled by -Wall since GCC 7) flags the snprintf
-# calls in make_blob_path() on their worst-case sizes; the truncation it
-# computes cannot happen with real paths. clang has no such check, and the
-# Makefile already prefers clang, so silence it for gcc only.
-ifeq ($(findstring gcc,$(notdir $(CC))),gcc)
-CFLAGS += -Wno-format-truncation
-endif
 DEPFLAGS := -MMD -MP
 
 TARGET_NAME := aladump
@@ -64,6 +62,11 @@ release: $(TARGET)
 
 native: CFLAGS  += -O3 -march=native -flto -DNDEBUG
 native: LDFLAGS += -flto
+ifeq ($(CC),clang)
+ifneq ($(shell command -v ld.lld >/dev/null 2>&1 && echo yes),)
+native: LDFLAGS += -fuse-ld=lld
+endif
+endif
 native: $(TARGET)
 	$(STRIP) $(TARGET)
 
